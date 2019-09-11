@@ -1,5 +1,25 @@
-// Include the axios npm package (Don't forget to run "npm install axios" in this folder first!)
-var axios = require("axios");
+// Include the axios npm package (run "npm install axios") *Use axios package to acess Bands in Town and OMDB.
+const axios = require("axios");
+//Include fs package/module? but already in node and don't need to install. Can use fs module to read, create, update, delete and rename files.
+const fs = require("fs");
+//Include moment npm package (run "npm install moment")
+const moment = require("moment");
+//Include the env npm package (run "npm install dotenv")
+require("dotenv").config();
+
+//Include the keys.js file *code required to import the `keys.js` file and store it in a variable
+const keys = require("./keys.js");
+
+//Include the spotify npm package (run "npm install --save node-spotify-api")
+const Spotify = require("node-spotify-api");
+const spotify = new Spotify(keys.spotify); 
+
+
+
+//User input 1 from terminal (0 and 1 are rubbish and garbage)
+const input1 = process.argv[2];
+//User input 2 from the terminal
+const input2 = process.argv[3];
 
 // Then run a request with axios to the OMDB API with the movie specified
 axios.get("http://www.omdbapi.com/?t=remember+the+titans&y=&plot=short&apikey=trilogy").then(
