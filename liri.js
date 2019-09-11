@@ -21,7 +21,22 @@ const input1 = process.argv[2];
 //User input 2 from the terminal
 const input2 = process.argv[3];
 
-// Then run a request with axios to the OMDB API with the movie specified
+//node liri.js concert-this <artist/band name here> will search Bands in Town API for the following: name of venue, venue location, date of event (i.e. moment.js "MM/DD/YYYY")
+
+
+(`"https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp"`) 
+
+//node liri.js spotify-this-song '<song name here> will show the following: artist, song name, preview link, album name, if no song.....default "The Sign" by Ace of Base
+
+(https://www.npmjs.com/package/node-spotify-api)
+
+
+//node liri.js movie-this '<movie name here>' will show the following: movie name, year, imdb rating, rotten rating, country produced, language, plot and actors, if no movie....'Mr. Nobody.' movie info block
+
+//If you haven't watched "Mr. Nobody," then you should: <http://www.imdb.com/title/tt0485947/>
+//It's on Netflix!
+
+// CLASS EXAMPLE ----Then run a request with axios to the OMDB API with the movie specified (OK to use trilogy api key)
 axios.get("http://www.omdbapi.com/?t=remember+the+titans&y=&plot=short&apikey=trilogy").then(
   function(response) {
     console.log("The movie's rating is: " + response.data.imdbRating);
@@ -46,3 +61,11 @@ axios.get("http://www.omdbapi.com/?t=remember+the+titans&y=&plot=short&apikey=tr
     }
     console.log(error.config);
   });
+
+  //node liri.js do-what-it-says`
+
+  //Using the `fs` Node package, LIRI will take the text inside of random.txt and then use it to call one of LIRI's commands.
+
+  //It should run `spotify-this-song` for "I Want it That Way," as follows the text in `random.txt`.
+
+  //Edit the text in random.txt to test out the feature for movie-this and concert-this.
