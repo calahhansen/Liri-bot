@@ -1,6 +1,6 @@
-console.log('this is loaded');
-
-exports.spotify = {
+// console.log('this is loaded');
+// we are exporting an object
+module.exports = {
   id: process.env.SPOTIFY_ID,
   secret: process.env.SPOTIFY_SECRET
 };

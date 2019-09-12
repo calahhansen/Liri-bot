@@ -12,6 +12,11 @@ const keys = require("./keys.js");
 
 //Include the spotify npm package (run "npm install --save node-spotify-api")
 const Spotify = require("node-spotify-api"); //Spotify Constructor
+// new instance
+var spotify = new Spotify({
+  id: keys.id,
+  secret: keys.secret,
+});
 
 //User input specifying the type of command from terminal (0 and 1 are rubbish and garbage)
 const cmdType = process.argv[2];
@@ -20,103 +25,72 @@ const userSearch = process.argv[3];
 
 //node liri.js concert-this <artist/band name here> will search Bands in Town API for the following: name of venue, venue location, date of event (i.e. moment.js "MM/DD/YYYY")
 
-//need some sort of an argument or === or || so that it just captures the "concert-this" and returns default artist/band if no userSearch or error
+//need some sort of an argument or === or || so that it just captures the exact "concert-this" and returns default artist/band if no userSearch or error
 
-// Create the Concert constructor
-const Concert = function() {
+// Create the Concert constructor - probably didn't need the constructor looking back on this....only returning 1 concert
+const Concert = function () {
   // divider will be used as a spacer between the tv data we print in log.txt
   const divider = "\n------------------------------------------------------------\n\n";
 
   // findBand takes in the name of a band or artist name and searches the spotify API
-  this.findBand = function(band) {
+  this.findBand = function (band) {
     const bandUrl = "https://rest.bandsintown.com/artists/" + band + "/events?app_id=codingbootcamp&date=upcoming";  //what is the error? -- needed another + after band to concatonate the rest of the URL
 
-    axios.get(bandUrl).then(function(response) {
-      // Place the response.data into a variable, jsonData.
-      // if response === [];
-      // return ("No future concerts coming up");
-      
-      const jsonData = response.data[0];
-      console.log(jsonData);
+    axios.get(bandUrl)
+      .then(function (response) {
+        // Place the response.data into a variable, jsonData.
+        if (response.data.length === 0) {
+          console.log("No future concerts coming up");
+        }
 
-      // showData ends up being the string containing the show data we will print to the console
-      const showEventData = [
-        "Venue Name: " + jsonData.venue.name,  //not totally sure if I am drilling down right??
-        "Location: " + jsonData.venue.city,   //.join(", "), - use this to join on region and country?
-        "Date: " + jsonData.datetime,
-      ].join("\n\n");
+        const jsonData = response.data[0];
+        // console.log(jsonData);
 
-      // Append showEventData and the divider to log.txt, print showEventData to the console
-      fs.appendFile("log.txt", showEventData + divider, function(err) {
-        if (err) throw err;
-        console.log(showEventData);
+        // showData ends up being the string containing the show data we will print to the console
+        const showEventData = [
+          "Venue Name: " + jsonData.venue.name,  //not totally sure if I am drilling down right??
+          "Location: " + jsonData.venue.city,   //.join(", "), - use this to join on region and country?
+          "Date: " + jsonData.datetime,
+        ].join("\n\n");
+
+        // Append showEventData and the divider to log.txt, print showEventData to the console
+        fs.appendFile("log.txt", showEventData + divider, function (err) {
+          if (err) throw err;
+          console.log(showEventData);
+        });
       });
-    });
   };
 }
-const concert = new Concert();
-console.log(";laksdjf;lkjiowaej")
-concert.findBand(userSearch)
-console.log(";laksdjf;lkjiowaej")
-
+if (cmdType === "concert-this") { //conditional statement (note to self....memorize if/else/return and review switch statements)
+  const concert = new Concert();
+  // console.log(";laksdjf;lkjiowaej");
+  concert.findBand(userSearch);
+}
 //node liri.js spotify-this-song '<song name here> will show the following: artist, song name, preview link, album name, if no song.....default "The Sign" by Ace of Base
 
-//need some sort of argument to recognize the "spotify-this-song" and give error or default if blank
-//need some variables and a function??
+else if(cmdType === "spotify-this-song") {
+  //spotify method search
+  spotify.search({ type: 'track', query: userSearch }, function (err, data) {
+    if (err) {
+      return console.log('Error occurred: ' + err);
+    }
+    else if ()
+    console.log(
+      "Artist: " + data.album.artists.name[0],
+      "Song Name: " + data.name,
+      ).join("\n\n");
 
-// Create the Song constructor
-const Spotify = function() {
-  // const spotify = new Spotify(keys.spotify); 
-  // divider will be used as a spacer between the spotify data we print in log.txt
-  const divider = "\n------------------------------------------------------------\n\n";
-
-  // findSong takes in the name of the song and searches the spotify API
-  this.findSong = function(song) {
-    const spotifyUrl = "https://open.spotify.com/song/" + song;
-
-    axios.get(spotifyUrl).then(function(response) {
-      // Place the response.data into a variable, jsonData.
-      // if response === [];
-      // return ("No future concerts coming up");
-      
-      const jsonData = response.data[0];
-      console.log(jsonData);
-
-      // showData ends up being the string containing the show data we will print to the console
-      const showSongData = [
-        "Artist: " + jsonData., //figure out drill down stuff from docs
-        "Song Name: " + jsonData.,   //.join(", "), - use this to join on region and country?
-        "Preview Link: " + jsonData.,
-        "Album Name: " +jsonData.,
-      ].join("\n\n");
-
-      // Append showEventData and the divider to log.txt, print showEventData to the console
-      fs.appendFile("log.txt", showSongData + divider, function(err) {
-        if (err) throw err;
-        console.log(showSongData);
-      });
+    // Append Song Data and the divider to log.txt, print showEventData to the console
+    fs.appendFile("log.txt", showEventData + divider, function (err) {
+      if (err) throw err;
+      console.log(showEventData);
     });
-  };
+  });
+};
 }
-const song = new Song();
-console.log(";laksdjf;lkjiowaej")
-song.findSong(userSearch)
-console.log(";laksdjf;lkjiowaej")
+  });
 
-// Example from Spotify API docs
-// var spotify = new Spotify({
-//   id: <your spotify client id>,
-//   secret: <your spotify client secret>
-// });
- 
-// spotify
-//   .request('https://api.spotify.com/v1/tracks/7yCPwWs66K8Ba5lFuU2bcx')
-//   .then(function(data) {
-//     console.log(data); 
-//   })
-//   .catch(function(err) {
-//     console.error('Error occurred: ' + err); 
-//   });
+}
 
 //node liri.js movie-this '<movie name here>' will show the following: movie name, year, imdb rating, rotten rating, country produced, language, plot and actors, if no movie....'Mr. Nobody.' movie info block
 // Grab the movieName which will always be the third node argument.
