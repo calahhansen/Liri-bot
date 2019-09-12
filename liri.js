@@ -20,25 +20,49 @@ var spotify = new Spotify({
   secret:7279e7eefbba4ebf9bad9898e04b9fc0,
 });
 
-//User input specifying movie, concert, song from terminal (0 and 1 are rubbish and garbage)
+//User input specifying the type of command from terminal (0 and 1 are rubbish and garbage)
 const cmdType = process.argv[2];
-//User input specifying the artist/band, movie, or song search from the terminal
+//User input specifying the artist/band, movie, or song search/request from the terminal
 const userSearch = process.argv[3];
 
 //node liri.js concert-this <artist/band name here> will search Bands in Town API for the following: name of venue, venue location, date of event (i.e. moment.js "MM/DD/YYYY")
-//npm docs say that you can use either method with spotify (search or request)....what is the difference?
-spotify.search({ type: 'track', query: 'All the Small Things' }, function(err, data) {
-  if (err) {
-    return console.log('Error occurred: ' + err);
-  }
- 
-console.log(data); 
-});
 
+//need some sort of an argument or === or || so that it just captures the "concert-this" and returns default artist/band if no userSearch or error
 
-(`"https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp"`) 
+// Create the Concert constructor
+const Concert = function() {
+  // divider will be used as a spacer between the tv data we print in log.txt
+  const divider = "\n------------------------------------------------------------\n\n";
+
+  // findBand takes in the name of a band or artist name and searches the spotify API
+  this.findBand = function(band) {
+    const URL = "https://rest.bandsintown.com/artists/" + band + "/events?app_id=codingbootcamp&date=upcoming";  //what is the error? -- needed another + after band to concatonate the rest of the URL
+
+    axios.get(URL).then(function(response) {
+      // Place the response.data into a variable, jsonData.
+      const jsonData = response.data;
+
+      // showData ends up being the string containing the show data we will print to the console
+      const showEventData = [
+        "Venue Name: " + jsonData.venue.name,  //not totally sure if I am drilling down right??
+        "Location: " + jsonData.venue.city,   //.join(", "), - use this to join on region and country?
+        "Date: " + jsonData.datetime,
+      ].join("\n\n");
+
+      // Append showEventData and the divider to log.txt, print showEventData to the console
+      fs.appendFile("log.txt", showEventData + divider, function(err) {
+        if (err) throw err;
+        console.log(showEventData);
+      });
+    });
+  };
+
 
 //node liri.js spotify-this-song '<song name here> will show the following: artist, song name, preview link, album name, if no song.....default "The Sign" by Ace of Base
+
+//need some sort of argument to recognize the "spotify-this-song" and give error or default if blank
+//need some variables and a function??
+
 const getEvents = function (input1) {
   if (input2 === "" || typeof input2 === typeof undefined) {
     input2 = "Estelle";
