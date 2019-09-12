@@ -11,14 +11,7 @@ require("dotenv").config();
 const keys = require("./keys.js");
 
 //Include the spotify npm package (run "npm install --save node-spotify-api")
-const Spotify = require("node-spotify-api"); //why does npm documentation capitalize Spotify?? This doesn't look like a constructor...
-const spotify = new Spotify(keys.spotify); 
-
-//How does this mix in with the env and keys.js?? copied from npm docs
-var spotify = new Spotify({
-  id:81fc3562f62e451bb39d0e0ff23296f1,
-  secret:7279e7eefbba4ebf9bad9898e04b9fc0,
-});
+const Spotify = require("node-spotify-api"); //Spotify Constructor
 
 //User input specifying the type of command from terminal (0 and 1 are rubbish and garbage)
 const cmdType = process.argv[2];
@@ -36,11 +29,15 @@ const Concert = function() {
 
   // findBand takes in the name of a band or artist name and searches the spotify API
   this.findBand = function(band) {
-    const URL = "https://rest.bandsintown.com/artists/" + band + "/events?app_id=codingbootcamp&date=upcoming";  //what is the error? -- needed another + after band to concatonate the rest of the URL
+    const bandUrl = "https://rest.bandsintown.com/artists/" + band + "/events?app_id=codingbootcamp&date=upcoming";  //what is the error? -- needed another + after band to concatonate the rest of the URL
 
-    axios.get(URL).then(function(response) {
+    axios.get(bandUrl).then(function(response) {
       // Place the response.data into a variable, jsonData.
-      const jsonData = response.data;
+      // if response === [];
+      // return ("No future concerts coming up");
+      
+      const jsonData = response.data[0];
+      console.log(jsonData);
 
       // showData ends up being the string containing the show data we will print to the console
       const showEventData = [
@@ -56,61 +53,111 @@ const Concert = function() {
       });
     });
   };
-
+}
+const concert = new Concert();
+console.log(";laksdjf;lkjiowaej")
+concert.findBand(userSearch)
+console.log(";laksdjf;lkjiowaej")
 
 //node liri.js spotify-this-song '<song name here> will show the following: artist, song name, preview link, album name, if no song.....default "The Sign" by Ace of Base
 
 //need some sort of argument to recognize the "spotify-this-song" and give error or default if blank
 //need some variables and a function??
 
-const getEvents = function (input1) {
-  if (input2 === "" || typeof input2 === typeof undefined) {
-    input2 = "Estelle";
-  }
-}
-// (https://www.npmjs.com/package/node-spotify-api)
+// Create the Song constructor
+const Spotify = function() {
+  // const spotify = new Spotify(keys.spotify); 
+  // divider will be used as a spacer between the spotify data we print in log.txt
+  const divider = "\n------------------------------------------------------------\n\n";
 
+  // findSong takes in the name of the song and searches the spotify API
+  this.findSong = function(song) {
+    const spotifyUrl = "https://open.spotify.com/song/" + song;
+
+    axios.get(spotifyUrl).then(function(response) {
+      // Place the response.data into a variable, jsonData.
+      // if response === [];
+      // return ("No future concerts coming up");
+      
+      const jsonData = response.data[0];
+      console.log(jsonData);
+
+      // showData ends up being the string containing the show data we will print to the console
+      const showSongData = [
+        "Artist: " + jsonData., //figure out drill down stuff from docs
+        "Song Name: " + jsonData.,   //.join(", "), - use this to join on region and country?
+        "Preview Link: " + jsonData.,
+        "Album Name: " +jsonData.,
+      ].join("\n\n");
+
+      // Append showEventData and the divider to log.txt, print showEventData to the console
+      fs.appendFile("log.txt", showSongData + divider, function(err) {
+        if (err) throw err;
+        console.log(showSongData);
+      });
+    });
+  };
+}
+const song = new Song();
+console.log(";laksdjf;lkjiowaej")
+song.findSong(userSearch)
+console.log(";laksdjf;lkjiowaej")
+
+// Example from Spotify API docs
+// var spotify = new Spotify({
+//   id: <your spotify client id>,
+//   secret: <your spotify client secret>
+// });
+ 
+// spotify
+//   .request('https://api.spotify.com/v1/tracks/7yCPwWs66K8Ba5lFuU2bcx')
+//   .then(function(data) {
+//     console.log(data); 
+//   })
+//   .catch(function(err) {
+//     console.error('Error occurred: ' + err); 
+//   });
 
 //node liri.js movie-this '<movie name here>' will show the following: movie name, year, imdb rating, rotten rating, country produced, language, plot and actors, if no movie....'Mr. Nobody.' movie info block
 // Grab the movieName which will always be the third node argument.
-var movieName = process.argv[2];
+// var movieName = process.argv[2];
 
 // Then run a request with axios to the OMDB API with the movie specified
-var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
+// var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
 
-// This line is just to help us debug against the actual URL.
-console.log(queryUrl);
+// // This line is just to help us debug against the actual URL.
+// console.log(queryUrl);
 
-axios.get(queryUrl).then(
-  function(response) {
-    console.log("Release Year: " + response.data.Year);
-  })
-  .catch(function(error) {
+// axios.get(queryUrl).then(
+//   function(response) {
+//     console.log("Release Year: " + response.data.Year);
+//   })
+//   .catch(function(error) {
 
-axios.get("http://www.omdbapi.com/?t=" + input3 "&y=&plot=short&apikey=trilogy").then(
-  function(response) {
-    console.log(response);
-  })
-  .catch(function(error) {
-    if (error.response) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx
-      console.log("---------------Data---------------");
-      console.log(error.response.data);
-      console.log("---------------Status---------------");
-      console.log(error.response.status);
-      console.log("---------------Status---------------");
-      console.log(error.response.headers);
-    } else if (error.request) {
-      // The request was made but no response was received
-      // `error.request` is an object that comes back with details pertaining to the error that occurred.
-      console.log(error.request);
-    } else {
-      // Something happened in setting up the request that triggered an Error
-      console.log("Error", error.message);
-    }
-    console.log(error.config);
-  });
+// axios.get("http://www.omdbapi.com/?t=" + input3 "&y=&plot=short&apikey=trilogy").then(
+//   function(response) {
+//     console.log(response);
+//   })
+//   .catch(function(error) {
+//     if (error.response) {
+//       // The request was made and the server responded with a status code
+//       // that falls out of the range of 2xx
+//       console.log("---------------Data---------------");
+//       console.log(error.response.data);
+//       console.log("---------------Status---------------");
+//       console.log(error.response.status);
+//       console.log("---------------Status---------------");
+//       console.log(error.response.headers);
+//     } else if (error.request) {
+//       // The request was made but no response was received
+//       // `error.request` is an object that comes back with details pertaining to the error that occurred.
+//       console.log(error.request);
+//     } else {
+//       // Something happened in setting up the request that triggered an Error
+//       console.log("Error", error.message);
+//     }
+//     console.log(error.config);
+//   });
 
 
 //If you haven't watched "Mr. Nobody," then you should: <http://www.imdb.com/title/tt0485947/>
