@@ -21,7 +21,7 @@ var spotify = new Spotify({
 //User input specifying the type of command from terminal (0 and 1 are rubbish and garbage)
 const cmdType = process.argv[2];
 //User input specifying the artist/band, movie, or song search/request from the terminal
-const userSearch = process.argv[3];
+const userSearch = process.argv.slice(3).join(" ");
 
 // divider will be used as a spacer between the data printed in log.txt
 const divider = "\n------------------------------------------------------------\n\n";
@@ -138,13 +138,18 @@ if (cmdType === "movie-this") {
 //node liri.js do-what-it-says`
 if (cmdType === "do-what-it-says") {
  //Using the `fs` Node package, LIRI will take the text inside of random.txt and then use it to call one of LIRI's commands.
- fs.readFile('random.txt', 'utf8', function(data){
-  var dataArr = data.split(',');
+ fs.readFile('random.txt', 'utf8', function(err, data){
+  if (err) {
+    return console.log('Error occurred: ' + err);
+  }
+  var dataArr = data.split(' ');
   console.log(dataArr);
+  const userSearch = dataArr.slice(1).join(" ");
+  console.log(userSearch);
 //It should run `spotify-this-song` for "I Want it That Way," as follows the text in `random.txt`.
 //ok to copy/paste from above stuff again?? or how can I call it without having it here a second time?
   if (dataArr[0] === "spotify-this-song") {
-    spotify.search({ type: 'track', query: dataArr[1] }, function (err, data) {
+    spotify.search({ type: 'track', query: userSearch }, function (err, data) {
       if (err) {
         return console.log('Error occurred: ' + err);
       }
@@ -158,6 +163,7 @@ if (cmdType === "do-what-it-says") {
         ].join("\n\n");
         console.log(songData);
       };
+      
   
       // Append Song Data and the divider to log.txt, print data to the console
       fs.appendFile("log.txt", songData + divider, function (err) {
