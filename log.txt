@@ -49,3 +49,45 @@ Preview Link: https://p.scdn.co/mp3-preview/e72a05dc3f69c891e3390c3ceaa77fad02f6
 Album: The Hits--Chapter One
 ------------------------------------------------------------
 
+Venue Name: Rock in Rio
+
+Location: Rio De Janeiro
+
+Date: 2019-10-05T19:00:51
+------------------------------------------------------------
+
+Artist: Dierks Bentley
+
+Song Name: Somewhere On A Beach
+
+Preview Link: null
+
+Album: Black
+------------------------------------------------------------
+
+Movie Name: Peter Pan
+
+Year: 1953
+
+IMDB Rating: 7.3/10
+
+Rotten Rating: 80%
+
+Country Produced: USA
+
+Language: English, American Sign Language
+
+Plot: Wendy and her brothers are whisked away to the magical world of Neverland with the hero of their stories, Peter Pan.
+
+Actors: Bobby Driscoll, Kathryn Beaumont, Hans Conried, Bill Thompson
+------------------------------------------------------------
+
+Artist: Backstreet Boys
+
+Song Name: I Want It That Way
+
+Preview Link: https://p.scdn.co/mp3-preview/e72a05dc3f69c891e3390c3ceaa77fad02f6b5f6?cid=81fc3562f62e451bb39d0e0ff23296f1
+
+Album: The Hits--Chapter One
+------------------------------------------------------------
+
