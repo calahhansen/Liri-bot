@@ -23,14 +23,15 @@ const cmdType = process.argv[2];
 //User input specifying the artist/band, movie, or song search/request from the terminal
 const userSearch = process.argv[3];
 
+ // divider will be used as a spacer between the data printed in log.txt
+ const divider = "\n------------------------------------------------------------\n\n";
+
 //node liri.js concert-this <artist/band name here> will search Bands in Town API for the following: name of venue, venue location, date of event (i.e. moment.js "MM/DD/YYYY")
 
 //need some sort of an argument or === or || so that it just captures the exact "concert-this" and returns default artist/band if no userSearch or error
 
 // Create the Concert constructor - probably didn't need the constructor looking back on this....only returning 1 concert
 const Concert = function () {
-  // divider will be used as a spacer between the tv data we print in log.txt
-  const divider = "\n------------------------------------------------------------\n\n";
 
   // findBand takes in the name of a band or artist name and searches the spotify API
   this.findBand = function (band) {
@@ -67,30 +68,30 @@ if (cmdType === "concert-this") { //conditional statement (note to self....memor
   concert.findBand(userSearch);
 }
 //node liri.js spotify-this-song '<song name here> will show the following: artist, song name, preview link, album name, if no song.....default "The Sign" by Ace of Base
-
-else if(cmdType === "spotify-this-song") {
-  //spotify method search
+else if (cmdType === "spotify-this-song") {
+  //spotify method search from npm documentation (not totally sure on how the err is working...)
   spotify.search({ type: 'track', query: userSearch }, function (err, data) {
     if (err) {
       return console.log('Error occurred: ' + err);
     }
-    else if ()
-    console.log(
-      "Artist: " + data.album.artists.name[0],
-      "Song Name: " + data.name,
-      ).join("\n\n");
+    else if (data) {
+      const songs = data.tracks.items; ///OMG!!!!  this drill down thing sucks
+      var songData = [
+        "Artist: " + songs[0].artists[0].name,
+        "Song Name: " + songs[0].name,
+        "Preview Link: " + songs[0].preview_url,
+        "Album: " + songs[0].album.name,
+        ].join("\n\n");
+      console.log(songData);
+    };
 
-    // Append Song Data and the divider to log.txt, print showEventData to the console
-    fs.appendFile("log.txt", showEventData + divider, function (err) {
+    // Append Song Data and the divider to log.txt, print data to the console
+    fs.appendFile("log.txt", songData + divider, function (err) {
       if (err) throw err;
-      console.log(showEventData);
+      // console.log(songData);
     });
   });
 };
-}
-  });
-
-}
 
 //node liri.js movie-this '<movie name here>' will show the following: movie name, year, imdb rating, rotten rating, country produced, language, plot and actors, if no movie....'Mr. Nobody.' movie info block
 // Grab the movieName which will always be the third node argument.
