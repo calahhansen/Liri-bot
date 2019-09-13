@@ -23,8 +23,8 @@ const cmdType = process.argv[2];
 //User input specifying the artist/band, movie, or song search/request from the terminal
 const userSearch = process.argv[3];
 
- // divider will be used as a spacer between the data printed in log.txt
- const divider = "\n------------------------------------------------------------\n\n";
+// divider will be used as a spacer between the data printed in log.txt
+const divider = "\n------------------------------------------------------------\n\n";
 
 //node liri.js concert-this <artist/band name here> will search Bands in Town API for the following: name of venue, venue location, date of event (i.e. moment.js "MM/DD/YYYY")
 
@@ -75,13 +75,13 @@ else if (cmdType === "spotify-this-song") {
       return console.log('Error occurred: ' + err);
     }
     else if (data) {
-      const songs = data.tracks.items; ///OMG!!!!  this drill down thing sucks
+      const songs = data.tracks.items; ///OMG!!!!  this drill down thing sucks.....I gave up on preview link
       var songData = [
         "Artist: " + songs[0].artists[0].name,
         "Song Name: " + songs[0].name,
         "Preview Link: " + songs[0].preview_url,
         "Album: " + songs[0].album.name,
-        ].join("\n\n");
+      ].join("\n\n");
       console.log(songData);
     };
 
@@ -93,87 +93,79 @@ else if (cmdType === "spotify-this-song") {
   });
 }
 //node liri.js movie-this '<movie name here>' will show the following: movie name, year, imdb rating, rotten rating, country produced, language, plot and actors, if no movie....'Mr. Nobody.' movie info block
-else if (cmdType === "movie-this") {
-  const Movie = function () {
-    // findmovie takes in the name of a movie and searches the OMDB API and requires axios
-    this.findMovie = function (movie) {
-      const movieUrl = "http://www.omdbapi.com/?t=" + movie + "&y=&plot=short&apikey=trilogy";  //ok to use trilogy apikey
-  
-      axios.get(movieUrl)
-        .then(function (response) {
-          // Place the response.data into a variable, jsonData.
-          if (response.data.length === 0) {
-            console.log("No future concerts coming up");
-          }
-  
-          const jsonData = response.data[0];
-          // console.log(jsonData);
-  
-          // showData ends up being the string containing the show data we will print to the console
-          const showEventData = [
-            "Venue Name: " + jsonData.venue.name,  //not totally sure if I am drilling down right??
-            "Location: " + jsonData.venue.city,   //.join(", "), - use this to join on region and country?
-            "Date: " + jsonData.datetime,
-          ].join("\n\n");
-  
-          // Append showEventData and the divider to log.txt, print showEventData to the console
-          fs.appendFile("log.txt", showEventData + divider, function (err) {
-            if (err) throw err;
-            console.log(showEventData);
-          });
+
+const Movie = function () {
+  // findmovie takes in the name of a movie and searches the OMDB API and requires axios
+  this.findMovie = function (movie) {
+    const movieUrl = "http://www.omdbapi.com/?t=" + movie + "&y=&plot=short&apikey=trilogy";  //ok to use trilogy apikey
+
+    axios.get(movieUrl).then(function (response) {
+      // Place the response.data into a variable, jsonData.
+      if (response.data.length === 0) {
+        console.log("Mr. Nobody - movie block"); //need to work on the error portion
+      } else {
+        const jsonData = response.data;
+        // console.log(jsonData);
+
+        // showMovieData ends up being the string containing the data we will print to the console
+        const showMovieData = [
+          "Movie Name: " + jsonData.Title, //note to self: upper case matters on drill down....so painful
+          "Year: " + jsonData.Year,
+          "IMDB Rating: " + jsonData.Ratings[0].Value,
+          "Rotten Rating: " + jsonData.Ratings[1].Value,
+          "Country Produced: " + jsonData.Country,
+          "Language: " + jsonData.Language,
+          "Plot: " + jsonData.Plot,
+          "Actors: " + jsonData.Actors,
+        ].join("\n\n");
+
+        // Append showEventData and the divider to log.txt, print showEventData to the console
+        fs.appendFile("log.txt", showMovieData + divider, function (err) {
+          if (err) throw err;
+          console.log(showMovieData);
         });
-    };
-  }
+      }
+    });
+  };
+}
+if (cmdType === "movie-this") {
+  const movie = new Movie();
+  // console.log(movie);
+  movie.findMovie(userSearch);
 }
 
-// Grab the movieName which will always be the third node argument.
-// var movieName = process.argv[2];
 
-// Then run a request with axios to the OMDB API with the movie specified
-// var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
-
-// // This line is just to help us debug against the actual URL.
-// console.log(queryUrl);
-
-// axios.get(queryUrl).then(
-//   function(response) {
-//     console.log("Release Year: " + response.data.Year);
-//   })
-//   .catch(function(error) {
-
-// axios.get("http://www.omdbapi.com/?t=" + input3 "&y=&plot=short&apikey=trilogy").then(
-//   function(response) {
-//     console.log(response);
-//   })
-//   .catch(function(error) {
-//     if (error.response) {
-//       // The request was made and the server responded with a status code
-//       // that falls out of the range of 2xx
-//       console.log("---------------Data---------------");
-//       console.log(error.response.data);
-//       console.log("---------------Status---------------");
-//       console.log(error.response.status);
-//       console.log("---------------Status---------------");
-//       console.log(error.response.headers);
-//     } else if (error.request) {
-//       // The request was made but no response was received
-//       // `error.request` is an object that comes back with details pertaining to the error that occurred.
-//       console.log(error.request);
-//     } else {
-//       // Something happened in setting up the request that triggered an Error
-//       console.log("Error", error.message);
-//     }
-//     console.log(error.config);
-//   });
-
-
-//If you haven't watched "Mr. Nobody," then you should: <http://www.imdb.com/title/tt0485947/>
-//It's on Netflix!
-
-  //node liri.js do-what-it-says`
-
-  //Using the `fs` Node package, LIRI will take the text inside of random.txt and then use it to call one of LIRI's commands.
-
-  //It should run `spotify-this-song` for "I Want it That Way," as follows the text in `random.txt`.
-
-  //Edit the text in random.txt to test out the feature for movie-this and concert-this.
+//node liri.js do-what-it-says`
+if (cmdType === "do-what-it-says") {
+ //Using the `fs` Node package, LIRI will take the text inside of random.txt and then use it to call one of LIRI's commands.
+ fs.readFile('random.txt', 'utf8', function(data){
+  var dataArr = data.split(',');
+  console.log(dataArr);
+//It should run `spotify-this-song` for "I Want it That Way," as follows the text in `random.txt`.
+//ok to copy/paste from above stuff again?? or how can I call it without having it here a second time?
+  if (dataArr[0] === "spotify-this-song") {
+    spotify.search({ type: 'track', query: dataArr[1] }, function (err, data) {
+      if (err) {
+        return console.log('Error occurred: ' + err);
+      }
+      else if (data) {
+        const songs = data.tracks.items; ///OMG!!!!  this drill down thing sucks.....I gave up on preview link
+        var songData = [
+          "Artist: " + songs[0].artists[0].name,
+          "Song Name: " + songs[0].name,
+          "Preview Link: " + songs[0].preview_url,
+          "Album: " + songs[0].album.name,
+        ].join("\n\n");
+        console.log(songData);
+      };
+  
+      // Append Song Data and the divider to log.txt, print data to the console
+      fs.appendFile("log.txt", songData + divider, function (err) {
+        if (err) throw err;
+        // console.log(songData);
+      });
+    });
+  }
+  }
+  //Edit the text in random.txt to test out the feature for movie-this and concert-this
+ )} 
