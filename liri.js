@@ -62,7 +62,7 @@ const Concert = function () {
       });
   };
 }
-if (cmdType === "concert-this") { //conditional statement (note to self....memorize if/else/return and review switch statements)
+if (cmdType === "concert-this") { //conditional statement (note to self....memorize if/else/return and re-review switch statements)
   const concert = new Concert();
   // console.log(";laksdjf;lkjiowaej");
   concert.findBand(userSearch);
@@ -91,9 +91,41 @@ else if (cmdType === "spotify-this-song") {
       // console.log(songData);
     });
   });
-};
-
+}
 //node liri.js movie-this '<movie name here>' will show the following: movie name, year, imdb rating, rotten rating, country produced, language, plot and actors, if no movie....'Mr. Nobody.' movie info block
+else if (cmdType === "movie-this") {
+  const Movie = function () {
+    // findmovie takes in the name of a movie and searches the OMDB API and requires axios
+    this.findMovie = function (movie) {
+      const movieUrl = "http://www.omdbapi.com/?t=" + movie + "&y=&plot=short&apikey=trilogy";  //ok to use trilogy apikey
+  
+      axios.get(movieUrl)
+        .then(function (response) {
+          // Place the response.data into a variable, jsonData.
+          if (response.data.length === 0) {
+            console.log("No future concerts coming up");
+          }
+  
+          const jsonData = response.data[0];
+          // console.log(jsonData);
+  
+          // showData ends up being the string containing the show data we will print to the console
+          const showEventData = [
+            "Venue Name: " + jsonData.venue.name,  //not totally sure if I am drilling down right??
+            "Location: " + jsonData.venue.city,   //.join(", "), - use this to join on region and country?
+            "Date: " + jsonData.datetime,
+          ].join("\n\n");
+  
+          // Append showEventData and the divider to log.txt, print showEventData to the console
+          fs.appendFile("log.txt", showEventData + divider, function (err) {
+            if (err) throw err;
+            console.log(showEventData);
+          });
+        });
+    };
+  }
+}
+
 // Grab the movieName which will always be the third node argument.
 // var movieName = process.argv[2];
 
